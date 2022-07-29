@@ -140,32 +140,47 @@ class Bot:
 
 class Player:
     def __init__(self):
+        global f
         num = random.choice(blocks)
         while True:
             print(f)
             try:
                 col = int(input(f'Куда поставить {num}? ')) - 1
 
-                # for debugging
-                # num, col = map(int, input().split())
+                if lose(col):
+                    print('You lose! ;(')
+                    if not input('Do you want to play again? (y - yes, n - no) ').lower() == 'y':
+                        break
+                    f = Field(sign, 5, 7)
+                else:
+                    # for debugging
+                    # num, col = map(int, input().split())
 
-                userblock = Block(num)
-                place(col, userblock)
+                    userblock = Block(num)
+                    place(col, userblock)
 
-                m = merge()
-                while m:
                     m = merge()
+                    while m:
+                        m = merge()
 
-                if maxblock() >= blocks[-2] ** 2:
-                    deleted = blocks.pop(0)
-                    blocks.append(blocks[-1] * 2)
-                    for i in range(f.height):
-                        for j in range(f.width):
-                            if f.field[i][j].number == deleted:
-                                f.field[i][j] = sign
-                num = random.choice(blocks)
+                    if maxblock() >= blocks[-2] ** 2:
+                        deleted = blocks.pop(0)
+                        blocks.append(blocks[-1] * 2)
+                        for i in range(f.height):
+                            for j in range(f.width):
+                                if f.field[i][j].number == deleted:
+                                    f.field[i][j] = sign
+                    num = random.choice(blocks)
+
             except:
                 print('incorrect input')
+
+def lose(num):
+    if sign.number not in str(f):
+        return True
+    if f.field[-1][num].number != sign.number:
+        return True
+    return False
 
 blocks = [2, 4, 8, 16, 32, 64, 128]
 if __name__=='__main__':
